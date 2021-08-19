@@ -10,8 +10,8 @@ const changeHierarchy = (pathToFolder) => {
     const currentPath = path.join(pathToFolder, file); 
     const stats = await fs.stat(currentPath);
     const newPath = path.join(mainFolder, file);
-    if(stats.isDirectory){
-      changeHierarchy(currentPath)
+    if(stats.isDirectory()){
+      changeHierarchy(currentPath);
     }  
     fs.rename(currentPath, newPath)
     .catch((err) =>
