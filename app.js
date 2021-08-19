@@ -18,5 +18,7 @@ const changeHierarchy = (pathToFolder) => {
     console.log(err)
   );
   }))
+  .catch((err) =>
+  console.log(err))
 }
 changeHierarchy(mainFolder);
