@@ -79,8 +79,8 @@ app.get('/users/:user_id', (req, res) => {
 
   user = JSON.parse(users).filter(user =>
     user.id == user_id);
-
-  res.status(OK).render('user', { user: user })
+  
+  res.status(OK).render('user', { user })
 });
 
 
@@ -91,7 +91,7 @@ app.post('/auth', (req, res) => {
   user = JSON.parse(users).filter(user =>
     user.email == email);
 
-
+  
   if (user.length == 0) {
     res.redirect('/reg');
     return;
@@ -101,8 +101,9 @@ app.post('/auth', (req, res) => {
     res.status(BAD_REQUEST).render('error', { message: 'Wrong password' });
     return;
   }
-
-  res.render('welcome', { user: user });
+ 
+  res.render('welcome', { user });
+  
 });
 
 
