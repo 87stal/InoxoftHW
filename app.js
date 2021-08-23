@@ -37,7 +37,7 @@ async function listUsers() {
 async function addUser(userEmail, userName, userPassword, userAge) {
   try {
     const allUsers = await fs.readFile(usersPath, "utf8");
-
+    user = [];
     user.push({
       id: uuidv4(),
       name: userName,
@@ -110,6 +110,7 @@ app.post('/auth', (req, res) => {
 app.post('/reg', (req, res) => {
 
   const { email, password, name, age } = req.body;
+
   const existingUser = JSON.parse(users).filter(user =>
     user.email == email);
 
@@ -119,6 +120,7 @@ app.post('/reg', (req, res) => {
   }
 
   if (validateEmail(email) && password) {
+    
     addUser(email, name, password, age);
     res.status(CREATED).redirect('/auth');
 
@@ -131,5 +133,5 @@ app.post('/reg', (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log('Example app listening on port 3000!')
+  console.log('Example app listening on port 5000!')
 })
