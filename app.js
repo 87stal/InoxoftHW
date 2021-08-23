@@ -47,7 +47,7 @@ async function addUser(userEmail, userName, userPassword, userAge) {
 
     const newUsers = [
       ...JSON.parse(allUsers),
-      user
+      ...user
     ];
     fs.writeFile(usersPath, JSON.stringify(newUsers), "utf8");
 
