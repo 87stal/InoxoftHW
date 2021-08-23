@@ -115,12 +115,12 @@ app.post('/reg', (req, res) => {
     return;
   }
 
-  if (validateEmail(email)) {
+  if (validateEmail(email) && password) {
     addUser(email, name, password, age);
   
     res.status(CREATED).redirect('/auth');
   } else {
-    res.render('error', {message: 'This email is invalid'});
+    res.render('error', {message: 'This email is invalid or not all required fields are filled in'});
   }
 
 });
