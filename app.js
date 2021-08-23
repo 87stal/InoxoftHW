@@ -1,43 +1,131 @@
-const fs = require("fs").promises;
+const express = require('express');
+const expressHbs = require('express-handlebars');
+const fs = require('fs').promises;
 const path = require("path");
+const { v4: uuidv4 } = require('uuid');
 
-const folderBoys = path.join(__dirname, "boys");
-const folderGirls = path.join(__dirname, "girls");
 
-const sortUser = (pathToFolder) => {
+const { BAD_REQUEST, CONFLICT, NOT_FOUND, OK, CREATED } = require('./config/statusCodes.enam');
+const validateEmail = require('./utils/validation');
 
-  fs.readdir(pathToFolder)
-    .then((files) =>
-      files.forEach((file) => {
 
-        const currentFilePath = path.join(pathToFolder, file);
-        const girlsFilePath = path.join(folderGirls, file);
-        const boysFilePath = path.join(folderBoys, file);
+const staticPath = path.join(__dirname, 'static');
+const usersPath = path.join(__dirname, '/db/users.json');
+let users;
+let user = [];
 
-        fs.readFile(currentFilePath).then((userInfo) => {
+const app = express();
 
-          const user = JSON.parse(userInfo.toString());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(staticPath));
+app.set('view engine', '.hbs');
+app.engine('.hbs', expressHbs({ defaultLayout: false }));
+app.set('views', staticPath);
 
-          switch (user.gender) {
-            case "female":
-              fs.rename(currentFilePath, girlsFilePath)
-                .catch((err) =>
-                  console.log(err)
-                );
-              break;
+//Work with database
+async function listUsers() {
+  try {
+    const allUsers = await fs.readFile(usersPath, "utf8");
+    users = allUsers;
+  } catch (err) {
+    throw err;
+  }
+}
 
-            case "male":
-              fs.rename(currentFilePath, boysFilePath)
-                .catch((err) =>
-                  console.log(err)
-                );
-              break;
-          }
-        });
-      })
-    )
-    .catch((err) => console.log(err));
-};
+async function addUser(userEmail, userName, userPassword, userAge) {
+  try {
+    const allUsers = await fs.readFile(usersPath, "utf8");
 
-sortUser(folderBoys);
-sortUser(folderGirls);
+    user.push({
+      id: uuidv4(),
+      name: userName,
+      email: userEmail,
+      age: userAge,
+      password: userPassword
+    });
+
+    const newUsers = [
+      ...JSON.parse(allUsers),
+      user
+    ];
+    fs.writeFile(usersPath, JSON.stringify(newUsers), "utf8");
+
+  } catch (err) {
+    throw err;
+  }
+}
+
+listUsers()
+//render endpoints 
+app.get('/reg', (req, res) => {
+  res.render('reg');
+});
+
+app.get('/auth', (req, res) => {
+  res.render('login');
+});
+
+app.get('/users', (req, res) => {
+  res.render('users', { users: JSON.parse(users)});
+});
+
+
+app.get('/users/:user_id', (req, res) => {
+  const { user_id } = req.params;
+  const query = req.query;
+  user = JSON.parse(users).filter(user =>
+    user.id == user_id);
+
+  res.status(OK).render('user', { user: user })
+});
+
+
+//Post req
+app.post('/auth', (req, res) => {
+
+  const { email, password } = req.body;
+
+  user = JSON.parse(users).filter(user =>
+    user.email == email);
+
+  if (user.length == 0) {
+    res.redirect('/reg');
+    return;
+  }
+
+  if (password !== user[0].password) {
+
+    res.status(BAD_REQUEST).render('error', { message: 'Wrong password' });
+    return;
+  }
+
+  res.render('welcome', { user: user });
+});
+
+
+app.post('/reg', (req, res) => {
+
+  const { email, password, name, age } = req.body;
+  const existingUser = JSON.parse(users).filter(user =>
+    user.email == email);
+
+  if (existingUser.length !== 0) {
+    res.status(CONFLICT).render('error', { message: 'This email alredy registered' });
+    return;
+  }
+
+  if (validateEmail(email)) {
+    addUser(email, name, password, age);
+  
+    res.status(CREATED).redirect('/auth');
+  } else {
+    res.render('error', {message: 'This email is invalid'});
+  }
+
+});
+
+
+app.listen(3000, () => {
+  console.log('Example app listening on port 3000!')
+})
