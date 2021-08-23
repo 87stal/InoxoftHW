@@ -45,13 +45,13 @@ async function addUser(userEmail, userName, userPassword, userAge) {
       age: userAge,
       password: userPassword
     });
-
+    
     const newUsers = [
       ...JSON.parse(allUsers),
       ...user
     ];
     fs.writeFile(usersPath, JSON.stringify(newUsers), "utf8");
-
+    listUsers();
   } catch (err) {
     throw err;
   }
@@ -85,11 +85,11 @@ app.get('/users/:user_id', (req, res) => {
 
 //Post req
 app.post('/auth', (req, res) => {
-
   const { email, password } = req.body;
-
+ 
   user = JSON.parse(users).filter(user =>
     user.email == email);
+    
 
   if (user.length == 0) {
     res.redirect('/reg');
@@ -97,7 +97,6 @@ app.post('/auth', (req, res) => {
   }
 
   if (password !== user[0].password) {
-
     res.status(BAD_REQUEST).render('error', { message: 'Wrong password' });
     return;
   }
@@ -107,7 +106,7 @@ app.post('/auth', (req, res) => {
 
 
 app.post('/reg', (req, res) => {
-
+ 
   const { email, password, name, age } = req.body;
   const existingUser = JSON.parse(users).filter(user =>
     user.email == email);
@@ -119,7 +118,6 @@ app.post('/reg', (req, res) => {
 
   if (validateEmail(email) && password) {
     addUser(email, name, password, age);
-  
     res.status(CREATED).redirect('/auth');
   } else {
     res.render('error', {message: 'This email is invalid or not all required fields are filled in'});
