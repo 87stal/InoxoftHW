@@ -45,7 +45,7 @@ async function addUser(userEmail, userName, userPassword, userAge) {
       age: userAge,
       password: userPassword
     });
-    
+
     const newUsers = [
       ...JSON.parse(allUsers),
       ...user
@@ -69,13 +69,14 @@ app.get('/auth', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
-  res.render('users', { users: JSON.parse(users)});
+  res.render('users', { users: JSON.parse(users) });
 });
 
 
 app.get('/users/:user_id', (req, res) => {
+
   const { user_id } = req.params;
-  const query = req.query;
+
   user = JSON.parse(users).filter(user =>
     user.id == user_id);
 
@@ -86,10 +87,10 @@ app.get('/users/:user_id', (req, res) => {
 //Post req
 app.post('/auth', (req, res) => {
   const { email, password } = req.body;
- 
+
   user = JSON.parse(users).filter(user =>
     user.email == email);
-    
+
 
   if (user.length == 0) {
     res.redirect('/reg');
@@ -106,7 +107,7 @@ app.post('/auth', (req, res) => {
 
 
 app.post('/reg', (req, res) => {
- 
+
   const { email, password, name, age } = req.body;
   const existingUser = JSON.parse(users).filter(user =>
     user.email == email);
@@ -119,8 +120,10 @@ app.post('/reg', (req, res) => {
   if (validateEmail(email) && password) {
     addUser(email, name, password, age);
     res.status(CREATED).redirect('/auth');
+
   } else {
-    res.render('error', {message: 'This email is invalid or not all required fields are filled in'});
+
+    res.render('error', { message: 'This email is invalid or not all required fields are filled in' });
   }
 
 });
