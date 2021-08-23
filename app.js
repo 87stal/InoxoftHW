@@ -5,9 +5,10 @@ const path = require("path");
 const { v4: uuidv4 } = require('uuid');
 
 
-const { BAD_REQUEST, CONFLICT, NOT_FOUND, OK, CREATED } = require('./config/statusCodes.enam');
+const { BAD_REQUEST, CONFLICT, NOT_FOUND, OK, CREATED } = require('./configs/statusCodes.enam');
+const { PORT } = require('./configs/config');
 const validateEmail = require('./utils/validation');
-
+const  listUsers  = require('./utils/users')
 
 const staticPath = path.join(__dirname, 'static');
 const usersPath = path.join(__dirname, '/db/users.json');
@@ -57,6 +58,7 @@ async function addUser(userEmail, userName, userPassword, userAge) {
 }
 
 listUsers()
+
 //render endpoints 
 app.get('/reg', (req, res) => {
   res.render('reg');
@@ -126,6 +128,6 @@ app.post('/reg', (req, res) => {
 });
 
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log('Example app listening on port 3000!')
 })

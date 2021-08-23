@@ -9,7 +9,7 @@ let users;
 let user = [];
 
 
-async function listUsers() {
+module.exports = async function listUsers() {
     try {
         const allUsers = await fs.readFile(usersPath, "utf8");
         users = allUsers;
@@ -18,7 +18,7 @@ async function listUsers() {
     }
 }
 
-async function addUser(userEmail, userName, userPassword, userAge) {
+module.exports = async function addUser(userEmail, userName, userPassword, userAge) {
     try {
         const allUsers = await fs.readFile(usersPath, "utf8");
         user.push({
@@ -30,7 +30,7 @@ async function addUser(userEmail, userName, userPassword, userAge) {
         });
         const newUsers = [
             ...JSON.parse(allUsers),
-            user
+            ...user
         ];
         fs.writeFile(usersPath, JSON.stringify(newUsers), "utf8");
 
@@ -39,4 +39,3 @@ async function addUser(userEmail, userName, userPassword, userAge) {
     }
 }
 
-module.exports = { listUsers, addUser };
