@@ -8,7 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const { BAD_REQUEST, CONFLICT, NOT_FOUND, OK, CREATED } = require('./configs/statusCodes.enam');
 const { PORT } = require('./configs/config');
 const validateEmail = require('./utils/validation');
-const  listUsers  = require('./utils/users')
+
 
 const staticPath = path.join(__dirname, 'static');
 const usersPath = path.join(__dirname, '/db/users.json');
