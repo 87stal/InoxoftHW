@@ -50,8 +50,10 @@ async function addUser(userEmail, userName, userPassword, userAge) {
       ...JSON.parse(allUsers),
       ...user
     ];
+
     fs.writeFile(usersPath, JSON.stringify(newUsers), "utf8");
     listUsers();
+
   } catch (err) {
     throw err;
   }
@@ -79,7 +81,7 @@ app.get('/users/:user_id', (req, res) => {
 
   user = JSON.parse(users).filter(user =>
     user.id == user_id);
-  
+
   res.status(OK).render('user', { user })
 });
 
@@ -91,7 +93,7 @@ app.post('/auth', (req, res) => {
   user = JSON.parse(users).filter(user =>
     user.email == email);
 
-  
+
   if (user.length == 0) {
     res.redirect('/reg');
     return;
@@ -101,9 +103,9 @@ app.post('/auth', (req, res) => {
     res.status(BAD_REQUEST).render('error', { message: 'Wrong password' });
     return;
   }
- 
+
   res.render('welcome', { user });
-  
+
 });
 
 
@@ -120,7 +122,7 @@ app.post('/reg', (req, res) => {
   }
 
   if (validateEmail(email) && password) {
-    
+
     addUser(email, name, password, age);
     res.status(CREATED).redirect('/auth');
 
