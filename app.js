@@ -3,8 +3,6 @@ const expressHbs = require('express-handlebars');
 const path = require("path");
 
 
-
-// const { BAD_REQUEST, CONFLICT, OK, CREATED } = require('./configs/statusCodes.enam');
 const { PORT } = require('./configs/config');
 
 
@@ -25,8 +23,6 @@ const { authRouter, usersRouter } = require('./router/index');
 
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
-
-
 
 
 app.listen(PORT, () => {
