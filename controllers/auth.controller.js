@@ -14,7 +14,6 @@ const login = async (req,  res) => {
     const user = JSON.parse(users).filter(user =>
         user.email == email);
 
-
     if (user.length == 0) {
         res.redirect('/auth/reg');
         return;
@@ -37,7 +36,6 @@ const createUser = async (req, res) => {
     const { email, password, name, age } = req.body;
 
     const users = await listUsers();
- 
 
     const existingUser = JSON.parse(users).filter(user =>
         user.email == email);
