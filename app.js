@@ -1,43 +1,34 @@
-const fs = require("fs").promises;
+const express = require('express');
+const expressHbs = require('express-handlebars');
 const path = require("path");
 
-const folderBoys = path.join(__dirname, "boys");
-const folderGirls = path.join(__dirname, "girls");
 
-const sortUser = (pathToFolder) => {
 
-  fs.readdir(pathToFolder)
-    .then((files) =>
-      files.forEach((file) => {
+// const { BAD_REQUEST, CONFLICT, OK, CREATED } = require('./configs/statusCodes.enam');
+const { PORT } = require('./configs/config');
 
-        const currentFilePath = path.join(pathToFolder, file);
-        const girlsFilePath = path.join(folderGirls, file);
-        const boysFilePath = path.join(folderBoys, file);
 
-        fs.readFile(currentFilePath).then((userInfo) => {
+const staticPath = path.join(__dirname, 'static');
 
-          const user = JSON.parse(userInfo.toString());
 
-          switch (user.gender) {
-            case "female":
-              fs.rename(currentFilePath, girlsFilePath)
-                .catch((err) =>
-                  console.log(err)
-                );
-              break;
+const app = express();
 
-            case "male":
-              fs.rename(currentFilePath, boysFilePath)
-                .catch((err) =>
-                  console.log(err)
-                );
-              break;
-          }
-        });
-      })
-    )
-    .catch((err) => console.log(err));
-};
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(staticPath));
+app.set('view engine', '.hbs');
+app.engine('.hbs', expressHbs({ defaultLayout: false }));
+app.set('views', staticPath);
 
-sortUser(folderBoys);
-sortUser(folderGirls);
+const { authRouter, usersRouter } = require('./router/index');
+
+
+app.use('/users', usersRouter);
+app.use('/auth', authRouter);
+
+
+
+
+app.listen(PORT, () => {
+  console.log('Example app listening on port 5000!')
+})
