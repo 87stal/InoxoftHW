@@ -2,16 +2,13 @@ const { listUsers, addUser } = require('../utils/users');
 const { CONFLICT, CREATED, BAD_REQUEST } = require('../configs/statusCodes.enam');
 const validateEmail = require('../utils/validation');
 
-const getLogForm = async (req, res) => {
-    res.render('login');
-};
 
 const login = async (req,  res) => {
   
     const { email, password } = req.body;
     const users = await listUsers();
 
-    const user = JSON.parse(users).filter(user =>
+    const user = JSON.parse(users).find(user =>
         user.email == email);
 
     if (user.length == 0) {
@@ -20,16 +17,19 @@ const login = async (req,  res) => {
     };
 
     if (password !== user[0].password) {
-        res.status(BAD_REQUEST).render('error', { message: 'Wrong password' });
+        res.status(BAD_REQUEST).json({
+            status: 'error',
+            code: BAD_REQUEST,
+            data: 'Bad request',
+            message: 'Wrong password'
+          })
+        };
         return;
     };
 
-    res.render('welcome', { user });
+
 };
 
-const getRegForm = async (req, res) => {
-    res.render('reg');
-};
 
 const createUser = async (req, res) => {
    
