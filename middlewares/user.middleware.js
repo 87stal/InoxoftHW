@@ -1,13 +1,16 @@
 const { User } = require('../db');
+
 const ErrorHandler = require('../errors/ErrorHandler');
 const validateEmail = require('../utils/validationEmail');
 const validatePassword = require('../utils/validationPassword');
+
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = require('../configs/statusCodes.enam');
 
 module.exports = {
+
     isEmailExist: async (req, res, next) => {
         try {
-            const { email = '' } = req.body;
+            const { email } = req.body;
 
             const userByEmail = await User.findOne({ email: email.trim() });
 
@@ -37,87 +40,50 @@ module.exports = {
         }
     },
 
-    isEmailValid: (req, res, next) => {
+    isDataUserValid: (req, res, next) => {
         try {
-            const { email } = req.body;
+            // eslint-disable-next-line object-curly-newline
+            const { email, password, name } = req.body;
 
             if (!validateEmail(email) || !email) {
                 throw new ErrorHandler(BAD_REQUEST, 'Email invalid');
             }
 
-            next();
-        } catch (err) {
-            next(err);
-        }
-    },
-
-    isPasswordValid: (req, res, next) => {
-        try {
-            const { password } = req.body;
-
             if (!validatePassword(password) || !password) {
                 throw new ErrorHandler(BAD_REQUEST, 'Password invalid');
             }
-
-            next();
-        } catch (err) {
-            next(err);
-        }
-    },
-
-    isNameValid: (req, res, next) => {
-        try {
-            const { name } = req.body;
 
             if (name.length < 3 || !name) {
                 throw new ErrorHandler(BAD_REQUEST, 'Name too short');
             }
 
             next();
-        } catch (err) {
-            next(err);
+        } catch (e) {
+            next(e);
         }
     },
 
-    isRoleValid: (req, res, next) => {
+    isBodyOnUpdateValid: (req, res, next) => {
         try {
-            const { role } = req.body;
+            // eslint-disable-next-line object-curly-newline
+            const { email, password, name } = req.body;
 
-            // eslint-disable-next-line no-constant-condition
-            if (role && (role !== 'user' || 'admin')) {
-                throw new ErrorHandler(BAD_REQUEST, 'Role invalid');
-            }
-
-            next();
-        } catch (err) {
-            next(err);
-        }
-    },
-
-    isBodyOnUpdateValid: async (req, res, next) => {
-        try {
-            const { body } = req;
-            const userByEmail = await User.findOne({ email: body.email.trim() });
-
-            if (userByEmail) {
-                throw new ErrorHandler(CONFLICT, 'Email is already exist');
-            }
-
-            if (body.name && body.name.length < 3) {
+            if (name && name.length < 3) {
                 throw new ErrorHandler(BAD_REQUEST, 'Name too short');
             }
 
-            if (body.email && !validateEmail(body.email)) {
+            if (email && !validateEmail(email)) {
                 throw new ErrorHandler(BAD_REQUEST, 'Email invalid');
             }
 
-            if (body.password && !validatePassword(body.password)) {
+            if (password && !validatePassword(password)) {
                 throw new ErrorHandler(BAD_REQUEST, 'Password invalid');
             }
 
             next();
-        } catch (err) {
-            next(err);
+        } catch (e) {
+            next(e);
         }
-    }
+    },
+
 };

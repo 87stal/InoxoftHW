@@ -8,8 +8,6 @@ const getUserById = async (req, res, next) => {
         const user = await User.findById(user_id);
 
         res.status(OK).json({
-            status: 'success',
-            code: 200,
             data: {
                 user
             }
@@ -24,8 +22,6 @@ const getAllUsers = async (req, res, next) => {
         const users = await User.find();
 
         res.status(OK).json({
-            status: 'success',
-            code: 200,
             data: {
                 users
             }
@@ -39,8 +35,6 @@ const createUser = async (req, res, next) => {
     try {
         const user = await User.create(req.body);
         res.status(CREATED).json({
-            status: 'created',
-            code: 201,
             data: {
                 user
             }
@@ -56,8 +50,6 @@ const deleteUserById = async (req, res, next) => {
         const user = await User.findByIdAndRemove(user_id);
 
         res.status(OK).json({
-            status: 'success',
-            code: 200,
             data: {
                 user
             }
@@ -73,8 +65,6 @@ const updateUserById = async (req, res, next) => {
         const user = await User.findByIdAndUpdate(user_id, req.body, { new: true, runValidators: true });
 
         res.status(OK).json({
-            status: 'success',
-            code: 200,
             data: {
                 user
             }

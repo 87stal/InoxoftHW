@@ -10,10 +10,10 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const { usersRouter } = require('./router/index');
+const { usersRouter, booksRouter } = require('./router/index');
 
 app.use('/users', usersRouter);
-// app.use('/auth', authRouter);
+app.use('/books', booksRouter);
 
 app.listen(PORT, () => {
     // eslint-disable-next-line no-console
