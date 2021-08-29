@@ -16,6 +16,10 @@ const userSchema = new Schema({
         type: String,
         required: true,
         trim: true
+    },
+    books: {
+        type: Array,
+        ref: 'Book'
     }
 }, { timestamps: true });
 

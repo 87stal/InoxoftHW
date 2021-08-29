@@ -26,9 +26,11 @@
     "lint-staged": "^11.1.2"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.3",
     "express-hbs": "^2.4.0",
+    "joi": "^17.4.2",
     "mongoose": "^6.0.2",
     "uuidv4": "^6.2.12"
   },

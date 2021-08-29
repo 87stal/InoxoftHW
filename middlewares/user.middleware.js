@@ -1,8 +1,7 @@
 const { User } = require('../db');
 
 const ErrorHandler = require('../errors/ErrorHandler');
-const validateEmail = require('../utils/validationEmail');
-const validatePassword = require('../utils/validationPassword');
+const { createUserValidator, updateUserValidator } = require('../validators/user.validator');
 
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = require('../configs/statusCodes.enam');
 
@@ -42,20 +41,13 @@ module.exports = {
 
     isDataUserValid: (req, res, next) => {
         try {
-            // eslint-disable-next-line object-curly-newline
-            const { email, password, name } = req.body;
+            const { error, value } = createUserValidator.validate(req.body);
 
-            if (!validateEmail(email) || !email) {
-                throw new ErrorHandler(BAD_REQUEST, 'Email invalid');
+            if (error) {
+                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
             }
 
-            if (!validatePassword(password) || !password) {
-                throw new ErrorHandler(BAD_REQUEST, 'Password invalid');
-            }
-
-            if (name.length < 3 || !name) {
-                throw new ErrorHandler(BAD_REQUEST, 'Name too short');
-            }
+            req.body = value;
 
             next();
         } catch (e) {
@@ -65,20 +57,13 @@ module.exports = {
 
     isBodyOnUpdateValid: (req, res, next) => {
         try {
-            // eslint-disable-next-line object-curly-newline
-            const { email, password, name } = req.body;
+            const { error, value } = updateUserValidator.validate(req.body);
 
-            if (name && name.length < 3) {
-                throw new ErrorHandler(BAD_REQUEST, 'Name too short');
+            if (error) {
+                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
             }
 
-            if (email && !validateEmail(email)) {
-                throw new ErrorHandler(BAD_REQUEST, 'Email invalid');
-            }
-
-            if (password && !validatePassword(password)) {
-                throw new ErrorHandler(BAD_REQUEST, 'Password invalid');
-            }
+            req.body = value;
 
             next();
         } catch (e) {

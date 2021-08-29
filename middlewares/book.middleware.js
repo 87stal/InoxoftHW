@@ -1,7 +1,7 @@
 const { Book } = require('../db');
 const ErrorHandler = require('../errors/ErrorHandler');
-const currentYear = require('../utils/currentYear');
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = require('../configs/statusCodes.enam');
+const { createBookValidator, updateBookValidator } = require('../validators/book.validator');
 
 module.exports = {
 
@@ -42,25 +42,13 @@ module.exports = {
 
     isDataBookValid: (req, res, next) => {
         try {
-            // eslint-disable-next-line object-curly-newline
-            const { name, author, year, pages } = req.body;
+            const { error, value } = createBookValidator.validate(req.body);
 
-            if (!name) {
-                throw new ErrorHandler(BAD_REQUEST, 'Name of the book is requared');
+            if (error) {
+                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
             }
 
-            if (!author || author.length < 3) {
-                throw new ErrorHandler(BAD_REQUEST, 'The name of author is invalid');
-            }
-
-            if (!year || year.length < 3 || +year > currentYear) {
-                throw new ErrorHandler(BAD_REQUEST, 'The year cannot be more than datу of today and less than 1000');
-            }
-
-            if (!pages || pages.length > 4) {
-                throw new ErrorHandler(BAD_REQUEST, 'Pages cannot be more than 4 digit');
-            }
-
+            req.body = value;
             next();
         } catch (e) {
             next(e);
@@ -69,25 +57,15 @@ module.exports = {
 
     isBodyOnUpdateValid: (req, res, next) => {
         try {
-            // eslint-disable-next-line object-curly-newline
-            const { name, author, year, pages } = req.body;
+            const { error, value } = updateBookValidator.validate(req.body);
 
-            if (name && name.length < 3) {
-                throw new ErrorHandler(BAD_REQUEST, 'Name too short');
+            if (error) {
+                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
             }
 
-            if (author && author.length < 3) {
-                throw new ErrorHandler(BAD_REQUEST, 'Author name invalid');
-            }
+            req.body = value;
 
-            if (year && (year.length < 4 || +year > currentYear)) {
-                throw new ErrorHandler(BAD_REQUEST, 'The year cannot be more than datу of today and less than 1000');
-            }
-
-            if (pages && pages.length > 4) {
-                throw new ErrorHandler(BAD_REQUEST, 'Pages cannot be more than 4 digit');
-            }
-
+            next();
             next();
         } catch (e) {
             next(e);

@@ -1,5 +1,7 @@
 const { User } = require('../db');
 const { OK, CREATED } = require('../configs/statusCodes.enam');
+const passwordService = require('../services/password.service');
+const { userNormalizator } = require('../utils/user.util');
 
 const getUserById = async (req, res, next) => {
     try {
@@ -7,9 +9,11 @@ const getUserById = async (req, res, next) => {
 
         const user = await User.findById(user_id);
 
+        const normalizedUser = userNormalizator(user);
+
         res.status(OK).json({
             data: {
-                user
+                normalizedUser
             }
         });
     } catch (e) {
@@ -21,9 +25,11 @@ const getAllUsers = async (req, res, next) => {
     try {
         const users = await User.find();
 
+        const normalizedUsers = users.map((user) => userNormalizator(user));
+
         res.status(OK).json({
             data: {
-                users
+                normalizedUsers
             }
         });
     } catch (e) {
@@ -33,10 +39,15 @@ const getAllUsers = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
     try {
-        const user = await User.create(req.body);
+        const { password } = req.body;
+
+        const hashPassword = await passwordService.hash(password);
+        const user = await User.create({ ...req.body, password: hashPassword });
+        const normalizedUser = userNormalizator(user);
+
         res.status(CREATED).json({
             data: {
-                user
+                normalizedUser
             }
         });
     } catch (e) {
@@ -49,9 +60,11 @@ const deleteUserById = async (req, res, next) => {
         const { user_id } = req.params;
         const user = await User.findByIdAndRemove(user_id);
 
+        const normalizedUser = userNormalizator(user);
+
         res.status(OK).json({
             data: {
-                user
+                normalizedUser
             }
         });
     } catch (e) {
@@ -64,9 +77,11 @@ const updateUserById = async (req, res, next) => {
         const { user_id } = req.params;
         const user = await User.findByIdAndUpdate(user_id, req.body, { new: true, runValidators: true });
 
+        const normalizedUser = userNormalizator(user);
+
         res.status(OK).json({
             data: {
-                user
+                normalizedUser
             }
         });
     } catch (e) {
