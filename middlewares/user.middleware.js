@@ -1,7 +1,7 @@
 const { User } = require('../db');
 
 const ErrorHandler = require('../errors/ErrorHandler');
-const { createUserValidator, updateUserValidator } = require('../validators/user.validator');
+const { createUserValidator, updateUserValidator, paramsUserValidator } = require('../validators/user.validator');
 
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = require('../configs/statusCodes.enam');
 
@@ -70,5 +70,20 @@ module.exports = {
             next(e);
         }
     },
+
+    isParamsIdValid: (req, res, next) => {
+        try {
+            const { error, value } = paramsUserValidator.validate(req.params);
+            if (error) {
+                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
+            }
+
+            req.params = value;
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    }
 
 };

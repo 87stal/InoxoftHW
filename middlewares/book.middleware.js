@@ -1,7 +1,7 @@
 const { Book } = require('../db');
 const ErrorHandler = require('../errors/ErrorHandler');
 const { BAD_REQUEST, CONFLICT, NOT_FOUND } = require('../configs/statusCodes.enam');
-const { createBookValidator, updateBookValidator } = require('../validators/book.validator');
+const { createBookValidator, updateBookValidator, paramsBookValidator } = require('../validators/book.validator');
 
 module.exports = {
 
@@ -69,6 +69,20 @@ module.exports = {
             next();
         } catch (e) {
             next(e);
+        }
+    },
+    isParamsIdValid: (req, res, next) => {
+        try {
+            const { error, value } = paramsBookValidator.validate(req.params);
+            if (error) {
+                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
+            }
+
+            req.params = value;
+
+            next();
+        } catch (error) {
+
         }
     }
 };

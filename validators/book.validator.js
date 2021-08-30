@@ -29,4 +29,8 @@ const updateBookValidator = Joi.object({
     year: Joi.number().integer().min(constants.CURRENT_YEAR - 2000).max(constants.CURRENT_YEAR),
 });
 
-module.exports = { createBookValidator, updateBookValidator };
+const paramsBookValidator = Joi.object({
+    book_id: Joi.string().regex(constants.ID_REGEXP).required()
+});
+
+module.exports = { createBookValidator, updateBookValidator, paramsBookValidator };
