@@ -1,12 +1,12 @@
-// eslint-disable-next-line object-curly-newline
-const { getBookById, getAllBooks, createBook, deleteBookById, updateBookById } = require('../controllers/book.controller');
-// eslint-disable-next-line max-len
+const router = require('express').Router();
+
+const {
+    getBookById, getAllBooks, createBook, deleteBookById, updateBookById
+} = require('../controllers/book.controller');
+
 const {
     isBookExist, isBookByIdExist, isDataBookValid, isBodyOnUpdateValid, isParamsIdValid
 } = require('../middlewares/book.middleware');
-
-// eslint-disable-next-line import/order
-const router = require('express').Router();
 
 router.get('/', getAllBooks);
 router.post('/', isDataBookValid, isBookExist, createBook);

@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const { BAD_REQUEST } = require('../configs/index');
+const { BAD_REQUEST } = require('../configs');
 const ErrorHandler = require('../errors/ErrorHandler');
 
 module.exports = {

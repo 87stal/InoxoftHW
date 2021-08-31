@@ -1,11 +1,11 @@
-// eslint-disable-next-line object-curly-newline
-const { getUserById, getAllUsers, createUser, deleteUserById, updateUserById } = require('../controllers/user.controller');
+const router = require('express').Router();
+
+const {
+    getUserById, getAllUsers, createUser, deleteUserById, updateUserById
+} = require('../controllers/user.controller');
 const {
     isEmailExist, isUserByIdExist, isDataUserValid, isBodyOnUpdateValid, isParamsIdValid
 } = require('../middlewares/user.middleware');
-
-// eslint-disable-next-line import/order
-const router = require('express').Router();
 
 router.get('/', getAllUsers);
 

@@ -9,7 +9,7 @@ const login = async (req, res) => {
     // eslint-disable-next-line no-shadow
     const user = JSON.parse(users).find((user) => user.email === email);
 
-    if (user.length === 0) {
+    if (!user.length) {
         res.redirect('/auth/reg');
         return;
     }
@@ -33,7 +33,7 @@ const createUser = async (req, res) => {
 
     const existingUser = JSON.parse(users).filter((user) => user.email === email);
 
-    if (existingUser.length !== 0) {
+    if (!existingUser.length) {
         res.status(CONFLICT).render('error', { message: 'This email alredy registered' });
         return;
     }
