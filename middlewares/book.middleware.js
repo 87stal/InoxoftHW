@@ -5,17 +5,17 @@ const { createBookValidator, updateBookValidator, paramsBookValidator } = requir
 
 module.exports = {
 
-    isBookExist: async (req, res, next) => {
+    isBookbyNameExist: (req, res, next) => {
         try {
-            const { name, author } = req.body;
+            const { books } = req;
+            const { name } = req.body;
+            let existingBook;
 
-            let bookByName;
-
-            if (name && author) {
-                bookByName = await Book.findOne({ name: name.trim(), author: author.trim() });
+            if (books && name) {
+                existingBook = books.find((book) => book.name === name);
             }
 
-            if (bookByName) {
+            if (existingBook) {
                 throw new ErrorHandler(CONFLICT, 'Book is already exist');
             }
 
@@ -25,12 +25,11 @@ module.exports = {
         }
     },
 
-    isBookByIdExist: async (req, res, next) => {
+    isBookByIdExist: (req, res, next) => {
         try {
-            const { book_id } = req.params;
-            const book = await Book.findById(book_id);
+            const { books } = req;
 
-            if (!book) {
+            if (!books) {
                 throw new ErrorHandler(NOT_FOUND, 'Book not found');
             }
 
@@ -66,23 +65,37 @@ module.exports = {
             req.body = value;
 
             next();
-            next();
         } catch (e) {
             next(e);
         }
     },
+
     isParamsIdValid: (req, res, next) => {
         try {
             const { error, value } = paramsBookValidator.validate(req.params);
+
             if (error) {
                 throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
             }
 
             req.params = value;
-
             next();
         } catch (error) {
 
+        }
+    },
+
+    getBookByDynamicParam: (paramName, searchIn = 'body', dbField = paramName) => async (req, res, next) => {
+        try {
+            const value = req[searchIn][paramName];
+
+            const books = await Book.find({ [dbField]: value.trim() });
+
+            req.books = books;
+
+            next();
+        } catch (e) {
+            next(e);
         }
     }
 };

@@ -1,13 +1,13 @@
 const Joi = require('joi');
 
-const { constants } = require('../configs/index');
+const { constants } = require('../configs');
 
 const createBookValidator = Joi.object({
-    name: Joi.string().alphanum().min(2).max(40)
+    name: Joi.string().min(2).max(40)
         .trim()
         .required(),
 
-    author: Joi.string().alphanum().min(2).max(40)
+    author: Joi.string().min(2).max(40)
         .trim()
         .required(),
 
@@ -20,13 +20,15 @@ const createBookValidator = Joi.object({
 });
 
 const updateBookValidator = Joi.object({
-    name: Joi.string().alphanum().min(2).max(40)
+    name: Joi.string().min(2).max(40)
         .trim(),
 
-    author: Joi.string().alphanum().min(2).max(40)
+    author: Joi.string().min(2).max(40)
         .trim(),
 
     year: Joi.number().integer().min(constants.CURRENT_YEAR - 2000).max(constants.CURRENT_YEAR),
+
+    pages: Joi.number().integer().min(5).max(2000)
 });
 
 const paramsBookValidator = Joi.object({

@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const { constants } = require('../configs/index');
+const { constants } = require('../configs');
 
 const createUserValidator = Joi.object({
     name: Joi.string().alphanum().min(2).max(30)

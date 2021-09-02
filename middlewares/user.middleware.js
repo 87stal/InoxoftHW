@@ -7,13 +7,11 @@ const { BAD_REQUEST, CONFLICT, NOT_FOUND } = require('../configs/statusCodes.ena
 
 module.exports = {
 
-    isEmailExist: async (req, res, next) => {
+    isEmailExist: (req, res, next) => {
         try {
-            const { email } = req.body;
+            const { user } = req;
 
-            const userByEmail = await User.findOne({ email: email.trim() });
-
-            if (userByEmail) {
+            if (user) {
                 throw new ErrorHandler(CONFLICT, 'Email is already exist');
             }
 
@@ -23,11 +21,9 @@ module.exports = {
         }
     },
 
-    isUserByIdExist: async (req, res, next) => {
+    isUserByIdExist: (req, res, next) => {
         try {
-            const { user_id } = req.params;
-
-            const user = await User.findById(user_id);
+            const { user } = req;
 
             if (!user) {
                 throw new ErrorHandler(NOT_FOUND, 'User not found');
@@ -79,6 +75,20 @@ module.exports = {
             }
 
             req.params = value;
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    getUserByDynamicParam: (paramName, searchIn = 'body', dbField = paramName) => async (req, res, next) => {
+        try {
+            const value = req[searchIn][paramName];
+
+            const user = await User.findOne({ [dbField]: value.trim() });
+
+            req.user = user;
 
             next();
         } catch (e) {

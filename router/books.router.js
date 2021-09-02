@@ -5,15 +5,21 @@ const {
 } = require('../controllers/book.controller');
 
 const {
-    isBookExist, isBookByIdExist, isDataBookValid, isBodyOnUpdateValid, isParamsIdValid
+    getBookByDynamicParam, isBookbyNameExist, isBookByIdExist, isDataBookValid, isBodyOnUpdateValid, isParamsIdValid
 } = require('../middlewares/book.middleware');
 
-router.get('/', getAllBooks);
-router.post('/', isDataBookValid, isBookExist, createBook);
+router.use('/:book_id', isParamsIdValid);
 
-router.post('/:book_id', isParamsIdValid, isBookByIdExist, updateBookById);
-router.get('/:book_id', isParamsIdValid, isBookByIdExist, getBookById);
-router.delete('/:book_id', isParamsIdValid, isBookByIdExist, deleteBookById);
-router.patch('/:book_id', isParamsIdValid, isBodyOnUpdateValid, isBookByIdExist, isBookExist, updateBookById);
+router.get('/', getAllBooks);
+router.post('/', isDataBookValid, getBookByDynamicParam('author'), isBookbyNameExist, createBook);
+
+router.get('/:book_id', getBookByDynamicParam('book_id', 'params', '_id'), isBookByIdExist, getBookById);
+router.delete('/:book_id', getBookByDynamicParam('book_id', 'params', '_id'), isBookByIdExist, deleteBookById);
+router.patch('/:book_id',
+    isBodyOnUpdateValid,
+    getBookByDynamicParam('book_id', 'params', '_id'),
+    isBookByIdExist,
+    isBookbyNameExist,
+    updateBookById);
 
 module.exports = router;

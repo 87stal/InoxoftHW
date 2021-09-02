@@ -1,11 +1,9 @@
 const { Book } = require('../db');
 const { OK, CREATED } = require('../configs/statusCodes.enam');
 
-const getBookById = async (req, res, next) => {
+const getBookById = (req, res, next) => {
     try {
-        const { book_id } = req.params;
-
-        const book = await Book.findById(book_id);
+        const book = req.books;
 
         res.status(OK).json({
             data: {

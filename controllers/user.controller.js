@@ -3,13 +3,9 @@ const { OK, CREATED } = require('../configs/statusCodes.enam');
 const passwordService = require('../services/password.service');
 const { userNormalizator } = require('../utils/user.util');
 
-const getUserById = async (req, res, next) => {
+const getUserById = (req, res, next) => {
     try {
-        const { user_id } = req.params;
-
-        const user = await User.findById(user_id);
-
-        const normalizedUser = userNormalizator(user);
+        const normalizedUser = userNormalizator(req.user);
 
         res.status(OK).json({
             data: {
@@ -75,6 +71,7 @@ const deleteUserById = async (req, res, next) => {
 const updateUserById = async (req, res, next) => {
     try {
         const { user_id } = req.params;
+
         const user = await User.findByIdAndUpdate(user_id, req.body, { new: true, runValidators: true });
 
         const normalizedUser = userNormalizator(user);
