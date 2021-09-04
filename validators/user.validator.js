@@ -31,5 +31,5 @@ const paramsUserValidator = Joi.object({
 module.exports = {
     createUserValidator,
     updateUserValidator,
-    paramsUserValidator
+    paramsUserValidator,
 };

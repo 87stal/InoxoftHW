@@ -1,24 +1,39 @@
 const router = require('express').Router();
 
-const {
-    getUserById, getAllUsers, createUser, deleteUserById, updateUserById
-} = require('../controllers/user.controller');
-const {
-    isEmailExist, isUserByIdExist, isDataUserValid, isBodyOnUpdateValid, isParamsIdValid, getUserByDynamicParam
-} = require('../middlewares/user.middleware');
+const { userController } = require('../controllers');
+const { userMiddlewares, authMiddlewares } = require('../middlewares');
 
-router.use('/:user_id', isParamsIdValid);
+router.get('/', userController.getAllUsers);
 
-router.get('/', getAllUsers);
+router.post('/reg',
+    userMiddlewares.isDataUserValid,
+    userMiddlewares.getUserByDynamicParam('email', 'body'),
+    userMiddlewares.isEmailExist,
+    userController.createUser);
 
-router.post('/reg', isDataUserValid, getUserByDynamicParam('email', 'body'), isEmailExist, createUser);
+router.use('/:user_id', userMiddlewares.isParamsIdValid, authMiddlewares.checkAccessToken);
 
-router.get('/:user_id', getUserByDynamicParam('user_id', 'params', '_id'), isUserByIdExist, getUserById);
-router.delete('/:user_id', getUserByDynamicParam('user_id', 'params', '_id'), isUserByIdExist, deleteUserById);
+router.get('/:user_id',
+    userMiddlewares.getUserByDynamicParam('user_id', 'params', '_id'),
+    userMiddlewares.isIdUserExist,
+    userController.getUserById);
+
+router.delete(
+    '/:user_id',
+    userMiddlewares.getUserByDynamicParam('user_id', 'params', '_id'),
+    userMiddlewares.isIdUserExist,
+    userController.deleteUserById
+);
+
 router.patch(
-    '/:user_id', isBodyOnUpdateValid,
-    getUserByDynamicParam('user_id', 'params', '_id'),
-    isUserByIdExist, getUserByDynamicParam('email', 'body'), isEmailExist, updateUserById
+    '/:user_id',
+    userMiddlewares.isBodyOnUpdateValid,
+    userMiddlewares.getUserByDynamicParam('user_id', 'params', '_id'),
+    userMiddlewares.isIdUserExist,
+    userMiddlewares.getUserByDynamicParam('email', 'body'),
+    userMiddlewares.isEmailExist,
+    authMiddlewares.checkAccessToken,
+    userController.updateUserById
 );
 
 module.exports = router;

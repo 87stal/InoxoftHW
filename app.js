@@ -12,10 +12,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const { usersRouter, booksRouter } = require('./router');
+const { usersRouter, booksRouter, authRouter } = require('./router');
 
 app.use('/users', usersRouter);
 app.use('/books', booksRouter);
+app.use('/auth', authRouter);
 
 app.listen(PORT, () => {
     console.log('Example app listening on port 5000!');

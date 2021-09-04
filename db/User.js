@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const { dataBaseTablesEnum } = require('../configs');
 
 const userSchema = new Schema({
     name: {
@@ -17,10 +18,10 @@ const userSchema = new Schema({
         required: true,
         trim: true
     },
-    books: {
+    [dataBaseTablesEnum.BOOK]: {
         type: Array,
-        ref: 'Book'
+        ref: dataBaseTablesEnum.BOOK
     }
 }, { timestamps: true });
 
-module.exports = model('user', userSchema);
+module.exports = model(dataBaseTablesEnum.USER, userSchema);

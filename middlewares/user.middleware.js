@@ -3,7 +3,7 @@ const { User } = require('../db');
 const ErrorHandler = require('../errors/ErrorHandler');
 const { createUserValidator, updateUserValidator, paramsUserValidator } = require('../validators/user.validator');
 
-const { BAD_REQUEST, CONFLICT, NOT_FOUND } = require('../configs/statusCodes.enam');
+const { statusCodes } = require('../configs');
 
 module.exports = {
 
@@ -12,7 +12,7 @@ module.exports = {
             const { user } = req;
 
             if (user) {
-                throw new ErrorHandler(CONFLICT, 'Email is already exist');
+                throw new ErrorHandler(statusCodes.CONFLICT, 'Email is already exist');
             }
 
             next();
@@ -21,12 +21,12 @@ module.exports = {
         }
     },
 
-    isUserByIdExist: (req, res, next) => {
+    isIdUserExist: (req, res, next) => {
         try {
             const { user } = req;
 
             if (!user) {
-                throw new ErrorHandler(NOT_FOUND, 'User not found');
+                throw new ErrorHandler(statusCodes.NOT_FOUND, 'User not found');
             }
 
             next();
@@ -40,7 +40,7 @@ module.exports = {
             const { error, value } = createUserValidator.validate(req.body);
 
             if (error) {
-                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
+                throw new ErrorHandler(statusCodes.BAD_REQUEST, error.details[0].message);
             }
 
             req.body = value;
@@ -56,7 +56,7 @@ module.exports = {
             const { error, value } = updateUserValidator.validate(req.body);
 
             if (error) {
-                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
+                throw new ErrorHandler(statusCodes.BAD_REQUEST, error.details[0].message);
             }
 
             req.body = value;
@@ -71,7 +71,7 @@ module.exports = {
         try {
             const { error, value } = paramsUserValidator.validate(req.params);
             if (error) {
-                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
+                throw new ErrorHandler(statusCodes.BAD_REQUEST, error.details[0].message);
             }
 
             req.params = value;

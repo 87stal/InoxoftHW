@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "cross-env NODE_ENV=development nodemon ./app.js",
-    "start": "cross-env NODE_ENV=production node ./app.js"
+    "start": "pm2 kill && pm2 start app.js --watch --name main-app"
   },
   "repository": {
     "type": "git",
@@ -36,7 +36,9 @@
     "express-handlebars": "^5.3.3",
     "express-hbs": "^2.4.0",
     "joi": "^17.4.2",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.2",
+    "pm2": "^5.1.1",
     "uuidv4": "^6.2.12"
   },
   "lint-staged": {

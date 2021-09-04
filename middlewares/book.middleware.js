@@ -44,7 +44,7 @@ module.exports = {
             const { error, value } = createBookValidator.validate(req.body);
 
             if (error) {
-                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
+                throw new ErrorHandler(BAD_REQUEST, 'Data of book invalid');
             }
 
             req.body = value;
@@ -59,7 +59,7 @@ module.exports = {
             const { error, value } = updateBookValidator.validate(req.body);
 
             if (error) {
-                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
+                throw new ErrorHandler(BAD_REQUEST, 'Data of book invalid');
             }
 
             req.body = value;
@@ -75,7 +75,7 @@ module.exports = {
             const { error, value } = paramsBookValidator.validate(req.params);
 
             if (error) {
-                throw new ErrorHandler(BAD_REQUEST, error.details[0].message);
+                throw new ErrorHandler(BAD_REQUEST, 'No book');
             }
 
             req.params = value;
