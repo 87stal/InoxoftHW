@@ -12,7 +12,7 @@ router.post(
 );
 
 router.post('/logout', authMiddlewares.checkAccessToken, authController.logout);
-
+router.post('/reset');
 router.post('/refresh', authMiddlewares.checkRefreshToken, authController.refreshToken);
 
 module.exports = router;

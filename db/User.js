@@ -18,6 +18,16 @@ const userSchema = new Schema({
         required: true,
         trim: true
     },
+    resetPasswordToken: {
+        type: String,
+        required: false
+    },
+
+    resetPasswordExpires: {
+        type: Date,
+        required: false
+    },
+
     [dataBaseTablesEnum.BOOK]: {
         type: Array,
         ref: dataBaseTablesEnum.BOOK

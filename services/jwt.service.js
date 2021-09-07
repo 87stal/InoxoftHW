@@ -22,5 +22,10 @@ module.exports = {
         } catch (e) {
             throw new ErrorHandler(statusCodes.UNA, 'Invalid token');
         }
+    },
+    generateTokenReset: () => {
+        const resetToken = jwt.sign({}, config.RESET_TOKEN_SECRET, { expiresIn: '10m' });
+
+        return resetToken;
     }
 };
