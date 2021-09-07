@@ -1,6 +1,6 @@
 const { User } = require('../db');
 const { OK, CREATED } = require('../configs/statusCodes.enam');
-const passwordService = require('../services/password.service');
+const { emailService, passwordService } = require('../services');
 const { userNormalizator } = require('../utils/user.util');
 
 const getUserById = (req, res, next) => {
@@ -40,6 +40,8 @@ const createUser = async (req, res, next) => {
         const hashPassword = await passwordService.hash(password);
         const user = await User.create({ ...req.body, password: hashPassword });
         const normalizedUser = userNormalizator(user);
+
+        await emailService.sendMail(user.email, 'emailWelcome', { name: user.name }, 'Welcome to online library');
 
         res.status(CREATED).json({
             data: {
