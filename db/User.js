@@ -27,7 +27,6 @@ const userSchema = new Schema({
         type: Date,
         required: false
     },
-
     [dataBaseTablesEnum.BOOK]: {
         type: Array,
         ref: dataBaseTablesEnum.BOOK

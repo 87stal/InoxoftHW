@@ -6,6 +6,8 @@ const {
 
 const { authMiddlewares, bookMiddlewares } = require('../middlewares');
 
+const { constants } = require('../configs');
+
 router.get('/', getAllBooks);
 router.post('/',
     bookMiddlewares.isDataBookValid,
@@ -21,18 +23,18 @@ router.get('/:book_id',
     getBookById);
 
 router.delete('/:book_id',
-    authMiddlewares.checkAccessToken,
+    authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN),
     bookMiddlewares.getBookByDynamicParam('book_id', 'params', '_id'),
     bookMiddlewares.isBookByIdExist,
     deleteBookById);
 
 router.patch('/:book_id',
-    authMiddlewares.checkAccessToken,
+    authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN),
     bookMiddlewares.isBodyOnUpdateValid,
     bookMiddlewares.getBookByDynamicParam('book_id', 'params', '_id'),
     bookMiddlewares.isBookByIdExist,
     bookMiddlewares.isBookbyNameExist,
-    authMiddlewares.checkAccessToken,
+    authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN),
     updateBookById);
 
 module.exports = router;

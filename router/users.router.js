@@ -3,6 +3,8 @@ const router = require('express').Router();
 const { userController } = require('../controllers');
 const { userMiddlewares, authMiddlewares } = require('../middlewares');
 
+const { constants } = require('../configs');
+
 router.get('/', userController.getAllUsers);
 
 router.post('/reg',
@@ -11,7 +13,7 @@ router.post('/reg',
     userMiddlewares.isEmailExist,
     userController.createUser);
 
-router.use('/:user_id', userMiddlewares.isParamsIdValid, authMiddlewares.checkAccessToken);
+router.use('/:user_id', userMiddlewares.isParamsIdValid, authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN));
 
 router.get('/:user_id',
     userMiddlewares.getUserByDynamicParam('user_id', 'params', '_id'),
@@ -32,7 +34,7 @@ router.patch(
     userMiddlewares.isIdUserExist,
     userMiddlewares.getUserByDynamicParam('email', 'body'),
     userMiddlewares.isEmailExist,
-    authMiddlewares.checkAccessToken,
+    authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN),
     userController.updateUserById
 );
 

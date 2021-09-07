@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 const { authController } = require('../controllers');
 const { authMiddlewares, userMiddlewares } = require('../middlewares');
+const { constants } = require('../configs');
 
 router.post(
     '/login',
@@ -11,8 +12,8 @@ router.post(
     authController.login
 );
 
-router.post('/logout', authMiddlewares.checkAccessToken, authController.logout);
+router.post('/logout', authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN), authController.logout);
 router.post('/reset');
-router.post('/refresh', authMiddlewares.checkRefreshToken, authController.refreshToken);
+router.post('/refresh', authMiddlewares.checkTokenDynamic(constants.REFRESH_TOKEN), authController.refreshToken);
 
 module.exports = router;
