@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const { dataBaseTablesEnum } = require('../configs');
+const { dataBaseTablesEnum, userRolesEnum } = require('../configs');
 
 const userSchema = new Schema({
     name: {
@@ -18,19 +18,15 @@ const userSchema = new Schema({
         required: true,
         trim: true
     },
-    resetPasswordToken: {
+    role: {
         type: String,
-        required: false
-    },
-
-    resetPasswordExpires: {
-        type: Date,
-        required: false
+        default: userRolesEnum.USER,
+        enum: Object.values(userRolesEnum)
     },
     [dataBaseTablesEnum.BOOK]: {
         type: Array,
         ref: dataBaseTablesEnum.BOOK
     }
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
 module.exports = model(dataBaseTablesEnum.USER, userSchema);

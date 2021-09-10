@@ -13,7 +13,13 @@ router.post(
 );
 
 router.post('/logout', authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN), authController.logout);
-router.post('/reset');
+router.post('/password/forgot/send', userMiddlewares.getUserByDynamicParam('email'), authController.sendMailForgotPassword);
 router.post('/refresh', authMiddlewares.checkTokenDynamic(constants.REFRESH_TOKEN), authController.refreshToken);
+router.post(
+    '/password/forgot/set',
+    authMiddlewares.validatePassword,
+    authMiddlewares.checkActionToken(constants.FORGOT_PASS),
+    authController.setUserPassword
+);
 
 module.exports = router;

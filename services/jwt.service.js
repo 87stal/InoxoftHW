@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 
 const ErrorHandler = require('../errors/ErrorHandler');
-const { statusCodes, config } = require('../configs');
+const { actionTypesEnum, statusCodes, config } = require('../configs');
 
 module.exports = {
     generateTokenPair: () => {
-        const access_token = jwt.sign({}, config.ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
+        const access_token = jwt.sign({}, config.ACCESS_TOKEN_SECRET, { expiresIn: '30m' });
         const refresh_token = jwt.sign({}, config.REFRESH_TOKEN_SECRET, { expiresIn: '31d' });
 
         return {
@@ -23,9 +23,40 @@ module.exports = {
             throw new ErrorHandler(statusCodes.UNA, 'Invalid token');
         }
     },
-    generateTokenReset: () => {
-        const resetToken = jwt.sign({}, config.RESET_TOKEN_SECRET, { expiresIn: '10m' });
+
+    generateToken: (tokenType) => {
+        let secretWord;
+
+        switch (tokenType) {
+            case actionTypesEnum.FORGOT_PASS:
+                secretWord = config.RESET_TOKEN_SECRET;
+                break;
+            case actionTypesEnum.SET_PASS:
+                secretWord = config.SET_PASS_TOKEN_SECRET;
+                break;
+            default:
+                throw new ErrorHandler(statusCodes.SERVER_ERROR, 'Invalid token type');
+        }
+
+        const resetToken = jwt.sign({ tokenType }, secretWord, { expiresIn: '7d' });
 
         return resetToken;
+    },
+
+    verifyActionToken: (actionType, token) => {
+        let word = '';
+
+        switch (actionType) {
+            case actionTypesEnum.FORGOT_PASS:
+                word = config.FORGOT_PASS_TOKEN_SECRET;
+                break;
+            case actionTypesEnum.SET_PASS:
+                word = config.SET_PASS_TOKEN_SECRET;
+                break;
+            default:
+                throw new ErrorHandler(500, 'Wrong actionType');
+        }
+
+        return jwt.verify(token, word);
     }
 };

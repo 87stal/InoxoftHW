@@ -1,6 +1,8 @@
 module.exports = {
+    actionTypesEnum: require('./actionTypes.enum'),
     config: require('./config'),
-    statusCodes: require('./statusCodes.enam'),
     constants: require('./constants'),
     dataBaseTablesEnum: require('./dataBaseTables.enum'),
+    statusCodes: require('./statusCodes.enum'),
+    userRolesEnum: require('./userRoles.enum')
 };

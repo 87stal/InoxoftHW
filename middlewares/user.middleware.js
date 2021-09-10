@@ -67,6 +67,24 @@ module.exports = {
         }
     },
 
+    checkUserRole: (roleArr = []) => (req, res, next) => {
+        try {
+            const { role } = req.currentUser;
+
+            if (!roleArr.length) {
+                return next();
+            }
+
+            if (!roleArr.includes(role)) {
+                throw new ErrorHandler(statusCodes.FORBIDDEN, 'Forbidden');
+            }
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
     isParamsIdValid: (req, res, next) => {
         try {
             const { error, value } = paramsUserValidator.validate(req.params);

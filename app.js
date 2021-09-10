@@ -12,8 +12,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const { usersRouter, booksRouter, authRouter } = require('./router');
+const {
+    usersRouter, booksRouter, authRouter, adminRouter
+} = require('./router');
 
+app.use('/admin', adminRouter);
 app.use('/users', usersRouter);
 app.use('/books', booksRouter);
 app.use('/auth', authRouter);

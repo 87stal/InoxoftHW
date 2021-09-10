@@ -1,6 +1,6 @@
 const { Book } = require('../db');
 const ErrorHandler = require('../errors/ErrorHandler');
-const { BAD_REQUEST, CONFLICT, NOT_FOUND } = require('../configs/statusCodes.enam');
+const { BAD_REQUEST, CONFLICT, NOT_FOUND } = require('../configs/statusCodes.enum');
 const { createBookValidator, updateBookValidator, paramsBookValidator } = require('../validators/book.validator');
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
             const { name } = req.body;
             let existingBook;
 
-            if (books && name) {
+            if (books.length && name) {
                 existingBook = books.find((book) => book.name === name);
             }
 
@@ -29,7 +29,7 @@ module.exports = {
         try {
             const { books } = req;
 
-            if (!books) {
+            if (!books.length) {
                 throw new ErrorHandler(NOT_FOUND, 'Book not found');
             }
 

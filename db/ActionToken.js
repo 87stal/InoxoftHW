@@ -2,12 +2,8 @@ const { Schema, model } = require('mongoose');
 
 const { dataBaseTablesEnum } = require('../configs');
 
-const OAuthSchema = new Schema({
-    access_token: {
-        type: String,
-        required: true
-    },
-    refresh_token: {
+const ActionTokenSchema = new Schema({
+    token: {
         type: String,
         required: true
     },
@@ -16,10 +12,10 @@ const OAuthSchema = new Schema({
         required: true,
         ref: dataBaseTablesEnum.USER
     },
-}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
+}, { timestamps: true });
 
-OAuthSchema.pre('findOne', function() {
+ActionTokenSchema.pre('findOne', function() {
     this.populate(dataBaseTablesEnum.USER);
 });
 
-module.exports = model(dataBaseTablesEnum.OAUTH, OAuthSchema);
+module.exports = model(dataBaseTablesEnum.ACTION_TOKEN, ActionTokenSchema);

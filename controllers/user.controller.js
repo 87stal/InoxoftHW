@@ -1,5 +1,5 @@
 const { User } = require('../db');
-const { OK, CREATED } = require('../configs/statusCodes.enam');
+const { OK, CREATED } = require('../configs/statusCodes.enum');
 const { emailService, passwordService } = require('../services');
 const { userNormalizator } = require('../utils/user.util');
 

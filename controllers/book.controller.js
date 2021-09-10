@@ -1,5 +1,5 @@
 const { Book } = require('../db');
-const { OK, CREATED } = require('../configs/statusCodes.enam');
+const { OK, CREATED } = require('../configs/statusCodes.enum');
 
 const getBookById = (req, res, next) => {
     try {
