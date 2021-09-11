@@ -8,4 +8,11 @@ module.exports = {
 
     ACCESS_TOKEN: 'access_token',
     REFRESH_TOKEN: 'refresh_token',
+
+    MAX_AVATAR_SIZE: 5 * 1024 * 1024,
+
+    PHOTOS_MIMETYPES: [
+        'image/gif',
+        'image/jpeg'
+    ]
 };

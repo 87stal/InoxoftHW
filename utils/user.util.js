@@ -4,10 +4,10 @@ const userNormalizator = (userToNormalize) => {
         '__v'
     ];
 
-    userToNormalize = userToNormalize.toJSON();
+    userToNormalize = userToNormalize.toObject();
 
-    filedToRemove.forEach((filed) => {
-        delete userToNormalize[filed];
+    filedToRemove.forEach((field) => {
+        delete userToNormalize[field];
     });
 
     return userToNormalize;

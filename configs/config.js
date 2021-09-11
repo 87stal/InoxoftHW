@@ -8,5 +8,10 @@ module.exports = {
 
     EMAIL_DEFAULT: process.env.EMAIL_DEFAULT || 'test@gmail.com',
     EMAIL_DEFAULT_PASSW: process.env.EMAIL_DEFAULT_PASSW || 'test@gmail.com',
-    FRONTED_URL: process.env.FRONTED_URL || 'https://inoxoft.com'
+    FRONTED_URL: process.env.FRONTED_URL || 'https://inoxoft.com',
+
+    AWS_S3_NAME: process.env.AWS_S3_NAME || 'library-course',
+    AWS_S3_SECRET_KEY: process.env.AWS_S3_SECRET_KEY,
+    AWS_S3_ACCESS_KEY: process.env.AWS_S3_ACCESS_KEY,
+    AWS_S3_REGION: process.env.AWS_S3_REGION || 'eu-west-3'
 };

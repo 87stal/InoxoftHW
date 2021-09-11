@@ -1,11 +1,11 @@
 const { User } = require('../db');
 const { OK, CREATED } = require('../configs/statusCodes.enum');
 const { emailService, passwordService } = require('../services');
-const { userNormalizator } = require('../utils/user.util');
+const { userUtil, fileUtil } = require('../utils');
 
 const getUserById = (req, res, next) => {
     try {
-        const normalizedUser = userNormalizator(req.user);
+        const normalizedUser = userUtil.userNormalizator(req.user);
 
         res.status(OK).json({
             data: {
@@ -21,7 +21,7 @@ const getAllUsers = async (req, res, next) => {
     try {
         const users = await User.find();
 
-        const normalizedUsers = users.map((user) => userNormalizator(user));
+        const normalizedUsers = users.map((user) => userUtil.userNormalizator(user));
 
         res.status(OK).json({
             data: {
@@ -36,17 +36,24 @@ const getAllUsers = async (req, res, next) => {
 const createUser = async (req, res, next) => {
     try {
         const { password } = req.body;
+        const { avatar } = req.files;
 
         const hashPassword = await passwordService.hash(password);
-        const user = await User.create({ ...req.body, password: hashPassword });
-        const normalizedUser = userNormalizator(user);
+        let user = await User.create({ ...req.body, password: hashPassword });
+
+        if (avatar) {
+            const { _id } = user;
+            const uploadFile = await fileUtil.uploadImage(avatar, 'user', _id);
+
+            user = await User.findByIdAndUpdate(_id, { avatar: uploadFile.Location }, { new: true });
+        }
+
+        const normalizedUser = userUtil.userNormalizator(user);
 
         await emailService.sendMail(user.email, 'emailWelcome', { name: user.name }, 'Welcome to online library');
 
         res.status(CREATED).json({
-            data: {
-                normalizedUser
-            }
+            normalizedUser
         });
     } catch (e) {
         next(e);
@@ -58,7 +65,7 @@ const deleteUserById = async (req, res, next) => {
         const { user_id } = req.params;
         const user = await User.findByIdAndRemove(user_id);
 
-        const normalizedUser = userNormalizator(user);
+        const normalizedUser = userUtil.userNormalizator(user);
 
         res.status(OK).json({
             data: {
@@ -76,7 +83,7 @@ const updateUserById = async (req, res, next) => {
 
         const user = await User.findByIdAndUpdate(user_id, req.body, { new: true, runValidators: true });
 
-        const normalizedUser = userNormalizator(user);
+        const normalizedUser = userUtil.userNormalizator(user);
 
         res.status(OK).json({
             data: {

@@ -1,3 +1,4 @@
 module.exports = {
-    userUtil: require('./user.util'),
+    fileUtil: require('./file.util'),
+    userUtil: require('./user.util')
 };

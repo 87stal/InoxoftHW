@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 const { userController } = require('../controllers');
-const { userMiddlewares, authMiddlewares } = require('../middlewares');
+const { userMiddlewares, authMiddlewares, uploadFileMiddlewares } = require('../middlewares');
 
 const { constants } = require('../configs');
 
@@ -9,6 +9,7 @@ router.get('/', userController.getAllUsers);
 
 router.post('/reg',
     userMiddlewares.isDataUserValid,
+    uploadFileMiddlewares.checkUserAvatar,
     userMiddlewares.getUserByDynamicParam('email', 'body'),
     userMiddlewares.isEmailExist,
     userController.createUser);
@@ -30,6 +31,7 @@ router.delete(
 router.patch(
     '/:user_id',
     userMiddlewares.isBodyOnUpdateValid,
+    uploadFileMiddlewares.checkUserAvatar,
     userMiddlewares.getUserByDynamicParam('user_id', 'params', '_id'),
     userMiddlewares.isIdUserExist,
     userMiddlewares.getUserByDynamicParam('email', 'body'),
