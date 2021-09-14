@@ -69,8 +69,6 @@ module.exports = {
 
     checkUserRole: (roleArr = []) => (req, res, next) => {
         try {
-            // const { role } = req.currentUser;
-
             if (!roleArr.length) {
                 return next();
             }
@@ -116,9 +114,14 @@ module.exports = {
 
     addBookToUser: (req, res, next) => {
         try {
-            const books = req.user.book;
-            const newBooks = { ...books, ...req.body.book };
-            req.body = { ...req.body, book: newBooks };
+            if (req.body.book) {
+                const books = [
+                    ...req.user.book,
+                    ...req.body.book
+                ];
+
+                req.body = { ...req.body, book: books };
+            }
             next();
         } catch (e) {
             next(e);

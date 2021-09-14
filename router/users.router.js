@@ -36,11 +36,12 @@ router.delete(
 router.patch(
     '/:user_id',
     userMiddlewares.isBodyOnUpdateValid,
+    authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN),
     userMiddlewares.getUserByDynamicParam('email', 'body'),
     userMiddlewares.isEmailExist,
     userMiddlewares.getUserByDynamicParam('user_id', 'params', '_id'),
     userMiddlewares.isIdUserExist,
-    authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN),
+    userMiddlewares.addBookToUser,
     userController.updateUserById
 );
 
