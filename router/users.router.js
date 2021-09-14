@@ -21,6 +21,11 @@ router.get('/:user_id',
     userMiddlewares.isIdUserExist,
     userController.getUserById);
 
+router.get('/:user_id/books',
+    userMiddlewares.getUserByDynamicParam('user_id', 'params', '_id'),
+    userMiddlewares.isIdUserExist,
+    userController.getBooksOfUser);
+
 router.delete(
     '/:user_id',
     userMiddlewares.getUserByDynamicParam('user_id', 'params', '_id'),
@@ -31,11 +36,10 @@ router.delete(
 router.patch(
     '/:user_id',
     userMiddlewares.isBodyOnUpdateValid,
-    uploadFileMiddlewares.checkUserAvatar,
-    userMiddlewares.getUserByDynamicParam('user_id', 'params', '_id'),
-    userMiddlewares.isIdUserExist,
     userMiddlewares.getUserByDynamicParam('email', 'body'),
     userMiddlewares.isEmailExist,
+    userMiddlewares.getUserByDynamicParam('user_id', 'params', '_id'),
+    userMiddlewares.isIdUserExist,
     authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN),
     userController.updateUserById
 );

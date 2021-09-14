@@ -23,6 +23,7 @@ const updateUserValidator = Joi.object({
     email: Joi.string().regex(constants.EMAIL_REGEXP).trim(),
     password: Joi.string().regex(constants.PASSWORD_REGEXP)
         .trim(),
+    book: Joi.array(),
 });
 
 const paramsUserValidator = Joi.object({

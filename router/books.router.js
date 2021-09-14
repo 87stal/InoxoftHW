@@ -4,12 +4,14 @@ const {
     getBookById, getAllBooks, createBook, deleteBookById, updateBookById
 } = require('../controllers/book.controller');
 
-const { authMiddlewares, bookMiddlewares } = require('../middlewares');
+const { authMiddlewares, bookMiddlewares, userMiddlewares } = require('../middlewares');
 
-const { constants } = require('../configs');
+const { constants, userRolesEnum } = require('../configs');
 
 router.get('/', getAllBooks);
 router.post('/',
+    authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN),
+    userMiddlewares.checkUserRole([userRolesEnum.ADMIN]),
     bookMiddlewares.isDataBookValid,
     bookMiddlewares.getBookByDynamicParam('author'),
     bookMiddlewares.isBookbyNameExist,
@@ -31,6 +33,7 @@ router.patch('/:book_id',
     bookMiddlewares.isBodyOnUpdateValid,
     bookMiddlewares.getBookByDynamicParam('book_id', 'params', '_id'),
     bookMiddlewares.isBookbyNameExist,
+    userMiddlewares.addBookToUser,
     authMiddlewares.checkTokenDynamic(constants.ACCESS_TOKEN),
     updateBookById);
 

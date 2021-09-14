@@ -69,13 +69,13 @@ module.exports = {
 
     checkUserRole: (roleArr = []) => (req, res, next) => {
         try {
-            const { role } = req.currentUser;
+            // const { role } = req.currentUser;
 
             if (!roleArr.length) {
                 return next();
             }
 
-            if (!roleArr.includes(role)) {
+            if (!roleArr.includes(req.currentUser.role)) {
                 throw new ErrorHandler(statusCodes.FORBIDDEN, 'Forbidden');
             }
 
@@ -103,15 +103,26 @@ module.exports = {
     getUserByDynamicParam: (paramName, searchIn = 'body', dbField = paramName) => async (req, res, next) => {
         try {
             const value = req[searchIn][paramName];
+            if (value) {
+                const user = await User.findOne({ [dbField]: value.trim() });
 
-            const user = await User.findOne({ [dbField]: value.trim() });
-
-            req.user = user;
-
+                req.user = user;
+            }
             next();
         } catch (e) {
             next(e);
         }
-    }
+    },
+
+    addBookToUser: (req, res, next) => {
+        try {
+            const books = req.user.book;
+            const newBooks = { ...books, ...req.body.book };
+            req.body = { ...req.body, book: newBooks };
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
 
 };

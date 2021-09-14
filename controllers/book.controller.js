@@ -72,5 +72,10 @@ const updateBookById = async (req, res, next) => {
     }
 };
 
-// eslint-disable-next-line object-curly-newline
-module.exports = { getBookById, getAllBooks, createBook, deleteBookById, updateBookById };
+module.exports = {
+    getBookById,
+    getAllBooks,
+    createBook,
+    deleteBookById,
+    updateBookById,
+};

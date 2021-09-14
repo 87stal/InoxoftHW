@@ -1,5 +1,5 @@
 const { User } = require('../db');
-const { OK, CREATED } = require('../configs/statusCodes.enum');
+const { statusCodes } = require('../configs');
 const { emailService, passwordService } = require('../services');
 const { userUtil, fileUtil } = require('../utils');
 
@@ -7,7 +7,7 @@ const getUserById = (req, res, next) => {
     try {
         const normalizedUser = userUtil.userNormalizator(req.user);
 
-        res.status(OK).json({
+        res.status(statusCodes.OK).json({
             data: {
                 normalizedUser
             }
@@ -23,7 +23,7 @@ const getAllUsers = async (req, res, next) => {
 
         const normalizedUsers = users.map((user) => userUtil.userNormalizator(user));
 
-        res.status(OK).json({
+        res.status(statusCodes.OK).json({
             data: {
                 normalizedUsers
             }
@@ -36,14 +36,13 @@ const getAllUsers = async (req, res, next) => {
 const createUser = async (req, res, next) => {
     try {
         const { password } = req.body;
-        const { avatar } = req.files;
 
         const hashPassword = await passwordService.hash(password);
         let user = await User.create({ ...req.body, password: hashPassword });
 
-        if (avatar) {
+        if (req.files && req.files.avatar) {
             const { _id } = user;
-            const uploadFile = await fileUtil.uploadImage(avatar, 'user', _id);
+            const uploadFile = await fileUtil.uploadImage(req.files.avatar, 'user', _id);
 
             user = await User.findByIdAndUpdate(_id, { avatar: uploadFile.Location }, { new: true });
         }
@@ -52,7 +51,7 @@ const createUser = async (req, res, next) => {
 
         await emailService.sendMail(user.email, 'emailWelcome', { name: user.name }, 'Welcome to online library');
 
-        res.status(CREATED).json({
+        res.status(statusCodes.CREATED).json({
             normalizedUser
         });
     } catch (e) {
@@ -67,7 +66,7 @@ const deleteUserById = async (req, res, next) => {
 
         const normalizedUser = userUtil.userNormalizator(user);
 
-        res.status(OK).json({
+        res.status(statusCodes.OK).json({
             data: {
                 normalizedUser
             }
@@ -85,7 +84,7 @@ const updateUserById = async (req, res, next) => {
 
         const normalizedUser = userUtil.userNormalizator(user);
 
-        res.status(OK).json({
+        res.status(statusCodes.OK).json({
             data: {
                 normalizedUser
             }
@@ -95,5 +94,30 @@ const updateUserById = async (req, res, next) => {
     }
 };
 
-// eslint-disable-next-line object-curly-newline
-module.exports = { getUserById, getAllUsers, createUser, deleteUserById, updateUserById };
+const getBooksOfUser = (req, res, next) => {
+    try {
+        const { user } = req;
+        const books = user.book;
+
+        if (!books.length) {
+            res.status(statusCodes.NO_CONTENT);
+        }
+
+        res.status(statusCodes.OK).json({
+            data: {
+                books
+            }
+        });
+    } catch (e) {
+        next(e);
+    }
+};
+
+module.exports = {
+    createUser,
+    deleteUserById,
+    getBooksOfUser,
+    getUserById,
+    getAllUsers,
+    updateUserById
+};
