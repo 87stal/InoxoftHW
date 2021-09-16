@@ -1,6 +1,6 @@
 const { User } = require('../db');
 const { statusCodes } = require('../configs');
-const { emailService, passwordService } = require('../services');
+const { emailService, passwordService, userService } = require('../services');
 const { userUtil, fileUtil } = require('../utils');
 
 const getUserById = (req, res, next) => {
@@ -8,9 +8,7 @@ const getUserById = (req, res, next) => {
         const normalizedUser = userUtil.userNormalizator(req.user);
 
         res.status(statusCodes.OK).json({
-            data: {
-                normalizedUser
-            }
+            normalizedUser
         });
     } catch (e) {
         next(e);
@@ -19,14 +17,10 @@ const getUserById = (req, res, next) => {
 
 const getAllUsers = async (req, res, next) => {
     try {
-        const users = await User.find();
-
-        const normalizedUsers = users.map((user) => userUtil.userNormalizator(user));
+        const response = await userService.findAll(req.query);
 
         res.status(statusCodes.OK).json({
-            data: {
-                normalizedUsers
-            }
+            response
         });
     } catch (e) {
         next(e);
@@ -67,9 +61,7 @@ const deleteUserById = async (req, res, next) => {
         const normalizedUser = userUtil.userNormalizator(user);
 
         res.status(statusCodes.OK).json({
-            data: {
-                normalizedUser
-            }
+            normalizedUser
         });
     } catch (e) {
         next(e);
@@ -85,9 +77,7 @@ const updateUserById = async (req, res, next) => {
         const normalizedUser = userUtil.userNormalizator(user);
 
         res.status(statusCodes.OK).json({
-            data: {
-                normalizedUser
-            }
+            normalizedUser
         });
     } catch (e) {
         next(e);
@@ -104,9 +94,7 @@ const getBooksOfUser = (req, res, next) => {
         }
 
         res.status(statusCodes.OK).json({
-            data: {
-                books
-            }
+            books
         });
     } catch (e) {
         next(e);

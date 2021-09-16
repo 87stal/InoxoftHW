@@ -6,11 +6,13 @@ const mongoose = require('mongoose');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const swaggerUI = require('swagger-ui-express');
 
 require('dotenv').config();
 
 const { statusCodes, config } = require('./configs');
 const cronJobs = require('./cron');
+const swaggerJson = require('./docs/swagger.json');
 
 mongoose.connect(config.URI_DB);
 
@@ -43,6 +45,7 @@ const {
 } = require('./router');
 
 app.use('/', apiLimiter);
+app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerJson, { explorer: true }));
 app.use('/admin', adminRouter);
 app.use('/users', usersRouter);
 app.use('/books', booksRouter);
